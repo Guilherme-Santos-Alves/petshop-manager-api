@@ -2,17 +2,19 @@ package com.guilhermesantos.petshop.dto;
 
 import java.time.LocalDate;
 
-public class PetCreateDTO {
+public class PetResponseDTO {
+    private Long id;
     private String name;
     private String breed;
     private String gender;
     private String color;
-    private double weight;
-    private double height;
+    private Double weight;
+    private Double height;
     private LocalDate birthDate;
     private Long ownerId;
 
-    public PetCreateDTO(String name, String breed, String gender, String color, double weight, double height, LocalDate birthDate, Long ownerId) {
+    public PetResponseDTO(Long id, String name, String breed, String gender, String color, Double weight, Double height, LocalDate birthDate, Long ownerId) {
+        this.id = id;
         this.name = name;
         this.breed = breed;
         this.gender = gender;
@@ -21,6 +23,14 @@ public class PetCreateDTO {
         this.height = height;
         this.birthDate = birthDate;
         this.ownerId = ownerId;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -55,19 +65,19 @@ public class PetCreateDTO {
         this.color = color;
     }
 
-    public double getWeight() {
+    public Double getWeight() {
         return weight;
     }
 
-    public void setWeight(double weight) {
+    public void setWeight(Double weight) {
         this.weight = weight;
     }
 
-    public double getHeight() {
+    public Double getHeight() {
         return height;
     }
 
-    public void setHeight(double height) {
+    public void setHeight(Double height) {
         this.height = height;
     }
 

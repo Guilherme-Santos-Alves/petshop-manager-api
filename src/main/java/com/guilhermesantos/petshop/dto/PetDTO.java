@@ -1,20 +1,40 @@
 package com.guilhermesantos.petshop.dto;
 
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
+
 import java.time.LocalDate;
 
 public class PetDTO {
-    private Long id;
+    @NotBlank(message = "Nome é obrigatório")
     private String name;
+
+    @NotBlank(message = "Raça é obrigatória")
     private String breed;
+
+    @NotNull(message = "Gênero é obrigatório")
     private String gender;
+
+    @NotBlank(message = "Cor é obrigatória")
     private String color;
+
+    @NotNull(message = "Peso é obrigatório")
+    @DecimalMin(value = "0.1", message = "Peso deve ser maior que 0")
     private Double weight;
+
+    @NotNull(message = "Altura é obrigatória")
+    @DecimalMin(value = "1.0", message = "Altura deve ser maior que 0")
     private Double height;
+
+    @Past(message = "Data de nascimento deve ser válida")
     private LocalDate birthDate;
+
+    @NotNull(message = "ID do proprietário é obrigatório")
     private Long ownerId;
 
-    public PetDTO(Long id, String name, String breed, String gender, String color, double weight, double height, LocalDate birthDate, Long ownerId) {
-        this.id = id;
+    public PetDTO(String name, String breed, String gender, String color, double weight, double height, LocalDate birthDate, Long ownerId) {
         this.name = name;
         this.breed = breed;
         this.gender = gender;
@@ -23,14 +43,6 @@ public class PetDTO {
         this.height = height;
         this.birthDate = birthDate;
         this.ownerId = ownerId;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
