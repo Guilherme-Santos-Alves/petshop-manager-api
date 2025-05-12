@@ -1,5 +1,6 @@
 package com.guilhermesantos.petshop.service;
 
+import com.guilhermesantos.petshop.dto.OwnerSummaryDTO;
 import com.guilhermesantos.petshop.model.Owner;
 import com.guilhermesantos.petshop.repository.OwnerRepository;
 

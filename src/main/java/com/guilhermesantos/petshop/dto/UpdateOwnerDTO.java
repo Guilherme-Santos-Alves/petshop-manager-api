@@ -1,36 +1,16 @@
 package com.guilhermesantos.petshop.dto;
 
-public class OwnerDTO {
-    private String name;
-    private String cpf;
+public class UpdateOwnerDTO {
     private String phone;
     private String email;
     private String address;
     private String password;
 
-    public OwnerDTO(String name, String cpf, String phone, String email, String address, String password) {
-        this.name = name;
-        this.cpf = cpf;
+    public UpdateOwnerDTO(String phone, String email, String password, String address) {
         this.phone = phone;
         this.email = email;
         this.address = address;
         this.password = password;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
     }
 
     public String getPhone() {
@@ -49,19 +29,19 @@ public class OwnerDTO {
         this.email = email;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     public String getPassword() {
         return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

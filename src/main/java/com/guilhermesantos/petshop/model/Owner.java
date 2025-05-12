@@ -20,15 +20,20 @@ public class Owner {
 
     private String password;
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     private String address;
+
+    public Owner(String name, String cpf, String phone, String email, String password, String address) {
+        this.name = name;
+        this.cpf = cpf;
+        this.phone = phone;
+        this.email = email;
+        this.password = password;
+        this.address = address;
+    }
+
+    public Owner(){
+
+    }
 
     public Long getId() {
         return id;
@@ -44,6 +49,14 @@ public class Owner {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
     }
 
     public String getPhone() {
@@ -70,11 +83,11 @@ public class Owner {
         this.address = address;
     }
 
-    public String getCpf() {
-        return cpf;
+    public String getPassword() {
+        return password;
     }
 
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
