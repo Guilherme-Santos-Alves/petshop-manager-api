@@ -27,8 +27,7 @@ public class User {
 
     private String password;
 
-    public User(Long id, String name, String cpf, String phone, String email, String address, String crmv, UserRole role, String password) {
-        this.id = id;
+    public User(String name, String cpf, String phone, String email, String address, String crmv, UserRole role, String password) {
         this.name = name;
         this.cpf = cpf;
         this.phone = phone;
