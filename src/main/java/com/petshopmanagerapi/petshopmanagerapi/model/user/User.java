@@ -1,30 +1,46 @@
 package com.petshopmanagerapi.petshopmanagerapi.model.user;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
 
 @Entity
 @Table(name = "ps_user")
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Nome é obrigatório")
     private String name;
 
+    @NotBlank(message = "CPF é obrigatório")
+    @Pattern(regexp = "\\d{11}", message = "CPF deve conter 11 dígitos numéricos")
     @Column(unique = true, nullable = false)
     private String cpf;
 
+    @NotBlank(message = "Telefone é obrigatório")
     private String phone;
 
+    @NotBlank(message = "E-mail é obrigatório")
+    @Email(message = "E-mail inválido")
+    @Column(unique = true, nullable = false)
     private String email;
 
+    @NotBlank(message = "Endereço é obrigatório")
     private String address;
 
-    private String crmv;
+    private String crmv; // pode validar isso no serviço se for role == VETERINARIAN
 
+    @NotNull(message = "Role é obrigatória")
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
+    @NotBlank(message = "Senha é obrigatória")
+    @Size(min = 6, message = "Senha deve ter no mínimo 6 caracteres")
     private String password;
 
     public User(String name, String cpf, String phone, String email, String address, String crmv, UserRole role, String password) {
@@ -104,8 +120,38 @@ public class User {
         this.role = role;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return role.getGrantedAuthorities();
+    }
+
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
     public void setPassword(String password) {

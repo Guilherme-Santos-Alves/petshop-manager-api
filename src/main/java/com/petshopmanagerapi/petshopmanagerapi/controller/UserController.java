@@ -5,6 +5,7 @@ import com.petshopmanagerapi.petshopmanagerapi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,7 +35,10 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<Void> create(@RequestBody UserDTO userDTO) {
+        String encryptedPassword = new BCryptPasswordEncoder().encode(userDTO.password());
         String crmv;
+        String cleanCpf = userDTO.cpf().replaceAll("\\D", "");
+        String cleanPhone = userDTO.phone().replaceAll("\\D", "");
 
         if (userDTO.role() != UserRole.VETERINARIAN) {
             crmv = "";
@@ -42,8 +46,8 @@ public class UserController {
             crmv = userDTO.crmv() != null ? userDTO.crmv() : "";
         }
 
-        User user = new User(userDTO.name(), userDTO.cpf(), userDTO.phone(), userDTO.email(),
-                userDTO.address(), crmv, userDTO.role(), userDTO.password());
+        User user = new User(userDTO.name(), cleanCpf, cleanPhone, userDTO.email(),
+                userDTO.address(), crmv, userDTO.role(), encryptedPassword);
 
         userService.save(user);
 
