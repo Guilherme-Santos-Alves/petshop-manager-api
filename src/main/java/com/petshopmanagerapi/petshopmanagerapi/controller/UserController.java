@@ -5,15 +5,18 @@ import com.petshopmanagerapi.petshopmanagerapi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired
@@ -34,7 +37,19 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<Void> create(@RequestBody UserDTO userDTO, Authentication authentication) {
+        Set<String> roles = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toSet());
+
+        boolean isAdmin = roles.contains("ROLE_ADMIN");
+        boolean isUser = roles.contains("ROLE_USER");
+
+        if (isUser && !isAdmin &&
+                (userDTO.role() == UserRole.ADMIN || userDTO.role() == UserRole.VETERINARIAN)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         String encryptedPassword = new BCryptPasswordEncoder().encode(userDTO.password());
         String crmv;
         String cleanCpf = userDTO.cpf().replaceAll("\\D", "");
