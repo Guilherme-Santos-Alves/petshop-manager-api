@@ -29,9 +29,9 @@ public class AuthController {
         var usernamePassword = new UsernamePasswordAuthenticationToken(authDTO.email(), authDTO.password());
         var auth = this.authenticationManager.authenticate(usernamePassword);
 
-        UserDetails user = (UserDetails) auth.getPrincipal();
-        var token = tokenService.generationToken((User) user);
+        User user = (User) auth.getPrincipal(); // downcast para ter acesso a getId() e getRole()
+        var token = tokenService.generationToken(user);
 
-        return ResponseEntity.ok(new LoginResponseDTO(token));
+        return ResponseEntity.ok(new LoginResponseDTO(user.getId(), user.getRole(), token));
     }
 }
