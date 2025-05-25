@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,17 +38,28 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody UserDTO userDTO, Authentication authentication) {
-        Set<String> roles = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toSet());
+    public ResponseEntity<Void> create(@RequestBody UserDTO userDTO) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        boolean isAdmin = roles.contains("ROLE_ADMIN");
-        boolean isUser = roles.contains("ROLE_USER");
+        if (authentication != null &&
+                authentication.isAuthenticated() &&
+                !"anonymousUser".equals(authentication.getPrincipal())) {
 
-        if (isUser && !isAdmin &&
-                (userDTO.role() == UserRole.ADMIN || userDTO.role() == UserRole.VETERINARIAN)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            Set<String> roles = authentication.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toSet());
+
+            boolean isAdmin = roles.contains("ROLE_ADMIN");
+            boolean isUser = roles.contains("ROLE_USER");
+
+            if (isUser && !isAdmin &&
+                    (userDTO.role() == UserRole.ADMIN || userDTO.role() == UserRole.VETERINARIAN)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        } else {
+            if (userDTO.role() != UserRole.USER) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
         }
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(userDTO.password());
@@ -68,6 +80,7 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUserById(@PathVariable Long id) {

@@ -1,4 +1,9 @@
 package com.petshopmanagerapi.petshopmanagerapi.security;
 
-public record AuthDTO(String email, String password) {
-}
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
+public record AuthDTO(
+        @NotBlank @Email String email,
+        @NotBlank String password
+) {}

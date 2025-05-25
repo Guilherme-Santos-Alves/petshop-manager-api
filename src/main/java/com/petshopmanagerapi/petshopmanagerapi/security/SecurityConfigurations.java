@@ -34,6 +34,7 @@ public class SecurityConfigurations {
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/pets").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/users").permitAll()
                         .anyRequest().permitAll()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

@@ -33,7 +33,7 @@ public class User implements UserDetails {
     @NotBlank(message = "Endereço é obrigatório")
     private String address;
 
-    private String crmv; // pode validar isso no serviço se for role == VETERINARIAN
+    private String crmv;
 
     @NotNull(message = "Role é obrigatória")
     @Enumerated(EnumType.STRING)
