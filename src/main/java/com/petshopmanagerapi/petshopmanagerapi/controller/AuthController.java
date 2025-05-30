@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,7 +28,7 @@ public class AuthController {
         var usernamePassword = new UsernamePasswordAuthenticationToken(authDTO.email(), authDTO.password());
         var auth = this.authenticationManager.authenticate(usernamePassword);
 
-        User user = (User) auth.getPrincipal(); // downcast para ter acesso a getId() e getRole()
+        User user = (User) auth.getPrincipal();
         var token = tokenService.generationToken(user);
 
         return ResponseEntity.ok(new LoginResponseDTO(user.getId(), user.getRole(), token));
