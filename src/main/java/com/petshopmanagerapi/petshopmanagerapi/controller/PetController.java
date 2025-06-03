@@ -1,9 +1,7 @@
 package com.petshopmanagerapi.petshopmanagerapi.controller;
 
-import com.petshopmanagerapi.petshopmanagerapi.model.pet.Pet;
-import com.petshopmanagerapi.petshopmanagerapi.model.pet.PetDTO;
-import com.petshopmanagerapi.petshopmanagerapi.model.pet.PetResponseDTO;
-import com.petshopmanagerapi.petshopmanagerapi.model.pet.PetSummaryDTO;
+import com.petshopmanagerapi.petshopmanagerapi.exception.ResourceNotFoundException;
+import com.petshopmanagerapi.petshopmanagerapi.model.pet.*;
 import com.petshopmanagerapi.petshopmanagerapi.model.user.User;
 import com.petshopmanagerapi.petshopmanagerapi.service.PetService;
 import com.petshopmanagerapi.petshopmanagerapi.service.UserService;
@@ -66,8 +64,24 @@ public class PetController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePetById(@PathVariable Long id) {
+        Pet pet = petService.getPetById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Pet não encontrado."));
+
         petService.deletePetById(id);
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/{id}")
+    public  ResponseEntity<Void> updatePetById(@PathVariable Long id, @RequestBody PetUpdateDTO petUpdateDTO) {
+        Pet pet = petService.getPetById(id)
+                .orElseThrow(() -> new RuntimeException("Pet não encontrado."));
+
+        pet.setName(petUpdateDTO.name());
+        pet.setBreed(petUpdateDTO.breed());
+        pet.setWeight(petUpdateDTO.weight());
+        pet.setHeight(petUpdateDTO.height());
+        petService.save(pet);
+
+        return ResponseEntity.noContent().build();
+    }
 }

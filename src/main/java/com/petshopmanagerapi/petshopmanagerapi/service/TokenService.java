@@ -51,7 +51,7 @@ public class TokenService {
         }
     }
 
-    public void authenticateToken(String token, UserRepository userRepository) {
+    public Authentication authenticateToken(String token, UserRepository userRepository) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             DecodedJWT jwt = JWT.require(algorithm)
@@ -60,7 +60,9 @@ public class TokenService {
                     .verify(token);
 
             String subject = jwt.getSubject();
-            if (subject == null || subject.isEmpty()) return;
+            if (subject == null || subject.isEmpty()) {
+                return null;
+            }
 
             List<String> roles = jwt.getClaim("roles").asList(String.class);
             List<GrantedAuthority> authorities = roles.stream()
@@ -68,13 +70,15 @@ public class TokenService {
                     .collect(Collectors.toList());
 
             UserDetails user = userRepository.findByEmail(subject);
-            if (user == null) return;
+            if (user == null) {
+                return null;
+            }
 
-            Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, authorities);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            return new UsernamePasswordAuthenticationToken(user, null, authorities);
 
         } catch (JWTVerificationException ex) {
             System.out.println("Erro ao validar token: " + ex.getMessage());
+            return null;
         }
     }
 
