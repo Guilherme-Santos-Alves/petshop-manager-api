@@ -1,5 +1,6 @@
 package com.petshopmanagerapi.petshopmanagerapi.controller;
 
+import com.petshopmanagerapi.petshopmanagerapi.exception.ResourceNotFoundException;
 import com.petshopmanagerapi.petshopmanagerapi.model.user.*;
 import com.petshopmanagerapi.petshopmanagerapi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,6 +85,9 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUserById(@PathVariable Long id) {
+        User user = userService.getUserById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado."));
+
         userService.deleteUserById(id);
         return ResponseEntity.noContent().build();
     }
@@ -91,7 +95,7 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateUserById(@PathVariable Long id, @RequestBody UserUpdateDTO userUpdateDTO) {
         User existingUser = userService.getUserById(id)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado."));
 
         existingUser.setPhone(userUpdateDTO.phone());
         existingUser.setEmail(userUpdateDTO.email());

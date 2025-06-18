@@ -32,14 +32,20 @@ public class PetController {
     }
 
     @GetMapping("/{id}")
-    public Optional<PetResponseDTO> getPetById(@PathVariable Long id) {
-        return petService.getPetById(id)
-                .map(pet -> new PetResponseDTO(pet.getId(), pet.getName(), pet.getPetSpecies(), pet.getBreed(), pet.getGender(),
-                        pet.getColor(), pet.getWeight(), pet.getHeight(), pet.getBirthDate(), pet.getOwner().getId()));
+    public PetResponseDTO getPetById(@PathVariable Long id) {
+        Pet pet = petService.getPetById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Pet não encontrado."));
+
+        return new PetResponseDTO(
+                pet.getId(), pet.getName(), pet.getPetSpecies(), pet.getBreed(), pet.getGender(), pet.getColor(), pet.getWeight(), pet.getHeight(), pet.getBirthDate(), pet.getOwner().getId()
+        );
     }
 
     @GetMapping("/owner/{ownerId}")
     public List<PetResponseDTO> getAllPetsByOwnerId(@PathVariable Long ownerId){
+        User owner = userService.getUserById(ownerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Dono não encontrado."));
+
         List<Pet> pets = petService.getAllPetsByOwnerId(ownerId);
 
         return pets.stream()
@@ -50,7 +56,7 @@ public class PetController {
     @PostMapping
     public ResponseEntity<Void> createPet(@RequestBody PetDTO petDTO) {
         User owner = userService.getUserById(petDTO.ownerId())
-                .orElseThrow(() -> new RuntimeException("Dono não encontrado."));
+                .orElseThrow(() -> new ResourceNotFoundException("Dono não encontrado."));
 
         Long ownerId = petDTO.ownerId();
         System.out.println(ownerId);
@@ -74,7 +80,7 @@ public class PetController {
     @PutMapping("/{id}")
     public  ResponseEntity<Void> updatePetById(@PathVariable Long id, @RequestBody PetUpdateDTO petUpdateDTO) {
         Pet pet = petService.getPetById(id)
-                .orElseThrow(() -> new RuntimeException("Pet não encontrado."));
+                .orElseThrow(() -> new ResourceNotFoundException("Pet não encontrado."));
 
         pet.setName(petUpdateDTO.name());
         pet.setBreed(petUpdateDTO.breed());

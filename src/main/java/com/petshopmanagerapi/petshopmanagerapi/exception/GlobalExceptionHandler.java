@@ -19,7 +19,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
-    // Captura genérica (opcional, recomendado)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGeneric(Exception ex) {
         Map<String, String> error = new HashMap<>();

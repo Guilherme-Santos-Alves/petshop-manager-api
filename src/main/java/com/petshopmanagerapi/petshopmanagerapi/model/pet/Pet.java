@@ -2,6 +2,10 @@ package com.petshopmanagerapi.petshopmanagerapi.model.pet;
 
 import com.petshopmanagerapi.petshopmanagerapi.model.user.User;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Positive;
 
 import java.time.LocalDate;
 
@@ -12,17 +16,33 @@ public class Pet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "O nome do pet é obrigatório.")
     private String name;
+
+    @NotNull(message = "A espécie do pet é obrigatória.")
     @Enumerated(EnumType.STRING)
     private PetSpecies petSpecies;
+
+    @NotBlank(message = "A raça do pet é obrigatória.")
     private String breed;
+
+    @NotNull(message = "O gênero do pet é obrigatório.")
     @Enumerated(EnumType.STRING)
     private PetGender gender;
+
+    @NotBlank(message = "A cor do pet é obrigatória.")
     private String color;
 
+    @NotNull(message = "O peso do pet é obrigatório.")
+    @Positive(message = "O peso deve ser um valor positivo.")
     private Double weight;
+
+    @NotNull(message = "A altura do pet é obrigatória.")
+    @Positive(message = "A altura deve ser um valor positivo.")
     private Double height;
 
+    @NotNull(message = "A data de nascimento é obrigatória.")
+    @PastOrPresent(message = "A data de nascimento não pode ser no futuro.")
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
@@ -31,6 +51,7 @@ public class Pet {
 
     @ManyToOne
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
+    @NotNull(message = "O dono do pet é obrigatório.")
     private User owner;
 
     public Pet(String name, PetSpecies petSpecies, String breed, PetGender gender, String color, Double weight, Double height, LocalDate birthDate, Long ownerId, User owner) {
